@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}ITIan Portal{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>ITIan</h2>
+        <ul>
+            <li><a href="{% url 'trainee_list' %}">trainee app</a></li>
+            <li><a href="{% url 'course_list' %}">course app</a></li>
+            <li><a href="{% url 'login' %}">login</a></li>
+            <li><a href="{% url 'register' %}">registration</a></li>
+            <li><a href="{% url 'logout' %}">logout</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>
