@@ -1,15 +1,10 @@
 {% extends 'base.html' %}
-
-{% block title %}Add Trainee{% endblock %}
-
 {% block content %}
-    <h2>Add Trainee</h2>
-    <form method="POST" action="{% url 'add_trainee' %}">
+    <h2>Add New Trainee</h2>
+    <form method="POST">
         {% csrf_token %}
-        <label>Name:</label>
-        <input type="text" name="name"><br><br>
-        <label>Track:</label>
-        <input type="text" name="track"><br><br>
-        <button type="submit">Submit (Will trigger dummy Redirect)</button>
+        <p>Name: <input type="text" name="name" required></p>
+        <p>Track: <input type="text" name="track" required></p>
+        <button type="submit">Insert Trainee</button>
     </form>
 {% endblock %}
