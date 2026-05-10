@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 from django.views.generic import RedirectView
-from django.conf import settings
-from django.conf.urls.static import static
+from django.conf import settings 
+from django.conf.urls.static import static 
 
 def dummy_login(request): return HttpResponse("<h1>Login Page Tag</h1>")
 def dummy_logout(request): return HttpResponse("<h1>Logout Tag</h1>")
