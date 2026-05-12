@@ -53,6 +53,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'itian_project.urls'
 
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'trainee_list'
+LOGOUT_REDIRECT_URL = 'login'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

@@ -1,40 +1,71 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, FormView
+from django.urls import reverse_lazy
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import RedirectURLMixin
 from .models import Trainee
-from .forms import TraineeModelForm 
+from .forms import TraineeModelForm
 
-def trainee_list(request):
-    trainees = Trainee.objects.all() 
-    return render(request, 'trainee_list.html', {'trainees': trainees})
 
-def trainee_detail(request, id):
-    trainee = get_object_or_404(Trainee, id=id) 
-    return render(request, 'trainee_detail.html', {'trainee': trainee})
+class TraineeListView(LoginRequiredMixin, ListView):
+    login_url = 'login'
+    model = Trainee
+    template_name = 'trainee_list.html'
+    context_object_name = 'trainees'
+    paginate_by = 10
 
-def add_trainee(request):
-    if request.method == 'POST':
-        t_name = request.POST.get('trainee_name')
-        t_course_id = request.POST.get('course_id') 
-        
-        Trainee.objects.create(name=t_name, course_id=t_course_id)
-        
-        return redirect('trainee_list')
-    
-    from course.models import Course
-    all_courses = Course.objects.all()
-    return render(request, 'add_trainee.html', {'courses': all_courses})
 
-def add_trainee_v2(request):
-    if request.method == 'POST':
-        form = TraineeModelForm(request.POST, request.FILES)
-        if form.is_valid(): 
-            form.save() 
-            return redirect('trainee_list')
-    else:
-        form = TraineeModelForm()
-    
-    return render(request, 'add_trainee_v2.html', {'form': form})
+class TraineeDetailView(LoginRequiredMixin, DetailView):
+    login_url = 'login'
+    model = Trainee
+    template_name = 'trainee_detail.html'
+    context_object_name = 'trainee'
+    pk_url_kwarg = 'id'
 
-def delete_trainee(request, id):
-    trainee = get_object_or_404(Trainee, id=id)
-    trainee.delete() 
-    return redirect('trainee_list')
+
+class TraineeCreateView(LoginRequiredMixin, CreateView):
+    login_url = 'login'
+    model = Trainee
+    form_class = TraineeModelForm
+    template_name = 'add_trainee_v2.html'
+    success_url = reverse_lazy('trainee_list')
+
+
+class TraineeDeleteView(LoginRequiredMixin, DeleteView):
+    login_url = 'login'
+    model = Trainee
+    template_name = 'trainee_confirm_delete.html'
+    success_url = reverse_lazy('trainee_list')
+    context_object_name = 'trainee' 
+    pk_url_kwarg = 'id'
+
+
+class RegisterView(CreateView):
+    form_class = UserCreationForm
+    template_name = 'register.html'
+    success_url = reverse_lazy('trainee_list')
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return super().form_valid(form)
+
+
+class LoginView(RedirectURLMixin, FormView):
+    form_class = AuthenticationForm
+    template_name = 'login.html'
+    success_url = reverse_lazy('trainee_list')
+
+    def form_valid(self, form):
+        user = form.get_user()
+        login(self.request, user)
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def get_success_url(self):
+        return self.get_redirect_url() or self.success_url
