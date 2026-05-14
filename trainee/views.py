@@ -4,7 +4,10 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import RedirectURLMixin
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from .models import Trainee
+from .serializers import TraineeSerializer
 from .forms import TraineeModelForm
 
 
@@ -39,6 +42,12 @@ class TraineeDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('trainee_list')
     context_object_name = 'trainee' 
     pk_url_kwarg = 'id'
+
+
+class TraineeViewSet(viewsets.ModelViewSet):
+    queryset = Trainee.objects.all()
+    serializer_class = TraineeSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class RegisterView(CreateView):
