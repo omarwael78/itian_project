@@ -45,9 +45,21 @@ class TraineeDeleteView(LoginRequiredMixin, DeleteView):
 
 
 class TraineeViewSet(viewsets.ModelViewSet):
+    """
+    Full CRUD for Trainee via JWT-protected REST API.
+    Endpoints:
+        GET    /api/trainees/          – list all trainees
+        POST   /api/trainees/          – create a trainee
+        GET    /api/trainees/{id}/     – retrieve a trainee
+        PUT    /api/trainees/{id}/     – full update
+        PATCH  /api/trainees/{id}/     – partial update
+        DELETE /api/trainees/{id}/     – delete
+    All endpoints require a valid JWT Bearer token.
+    """
     queryset = Trainee.objects.all()
     serializer_class = TraineeSerializer
     permission_classes = [IsAuthenticated]
+
 
 
 class RegisterView(CreateView):
